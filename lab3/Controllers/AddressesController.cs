@@ -26,10 +26,10 @@ namespace lab3.Controllers
         {
 			if(!String.IsNullOrEmpty(query))
 			{
-				return _context.Address.Where(m => m.PostalCode.Contains(query)).Take(20);
+				return _context.Address.Where(m => m.PostalCode.Contains(query)).Include(m => m.StateProvince).ThenInclude(m => m.CountryRegionCodeNavigation).Take(20);
 			}
 
-            return _context.Address.Take(20);
+            return _context.Address.Include(m => m.StateProvince).ThenInclude(m => m.CountryRegionCodeNavigation).Take(20);
         }
 
         // GET: api/Addresses/5
@@ -41,7 +41,7 @@ namespace lab3.Controllers
                 return BadRequest(ModelState);
             }
 
-            var address = await _context.Address.SingleOrDefaultAsync(m => m.AddressId == id);
+            var address = await _context.Address.Include(m => m.StateProvince).ThenInclude(m => m.CountryRegionCodeNavigation).SingleOrDefaultAsync(m => m.AddressId == id);
 
             if (address == null)
             {
